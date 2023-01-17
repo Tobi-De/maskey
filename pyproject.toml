@@ -1,0 +1,141 @@
+[build-system]
+requires = [
+    "hatchling",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "maskey"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Tobi DEGNON", email = "tobidegnon@proton.me" },
+]
+dependencies = [
+    "Pillow",
+    "argon2-cffi",
+    "hiredis",
+    "redis",
+    "Django",
+    "django-environ",
+    "django-model-utils",
+    "django-allauth",
+    "django-render-block",
+    "django-extensions",
+    "django-improved-user==2.0a2",
+    "django-htmx",
+    "django-bootstrap5",
+    "gunicorn",
+    "psycopg2",
+    "sentry-sdk",
+    "django-anymail",
+    "whitenoise",
+]
+
+[project.urls]
+
+[project.scripts]
+
+[project.optional-dependencies]
+dev = [
+    "django-browser-reload",
+    "django-debug-toolbar",
+    "django-fastdev",
+    "ipython",
+    "pywatchman",
+    "coverage",
+    "pytest",
+    "pytest-django",
+    "pytest-sugar",
+    "pre-commit",
+    "pylint-django",
+    "bandit",
+    "poethepoet",
+    "Werkzeug",
+]
+
+[tool.poe.tasks]
+RD = [
+    "rd",
+    "rm",
+    "mk",
+    "m",
+]
+
+[tool.poe.tasks.r]
+cmd = "python manage.py runserver --nostatic"
+help = "Start dev serve"
+
+[tool.poe.tasks.u]
+cmd = "python manage.py makesuperuser"
+help = "Create a new superuser using environment varibales, look in your .env.template file"
+
+[tool.poe.tasks.m]
+cmd = "python manage.py migrate"
+help = "Apply migrations"
+
+[tool.poe.tasks.mk]
+cmd = "python manage.py makemigrations"
+help = "Make migrations"
+
+[tool.poe.tasks.rd]
+cmd = "python manage.py reset_db --noinput"
+help = "Delete and recreate your database"
+
+[tool.poe.tasks.rm]
+cmd = "cuzzy rm-migrations maskey"
+help = "Delete all migrations files"
+
+[tool.poe.tasks.d]
+cmd = "pip-compile -o requirements.txt pyproject.toml --resolver=backtracking"
+help = "Generate requirements.txt file"
+
+[tool.ruff]
+line-length = 120
+select = [
+    "E",
+    "F",
+    "UP",
+    "N",
+    "S",
+    "C",
+    "B",
+    "T",
+]
+extend-exclude = [
+    "*/migrations/*",
+]
+
+[tool.djlint]
+profile = "django"
+max_line_length = 120
+format_attribute_template_tags = true
+ignore = "H017"
+
+[tool.pylint.MASTER]
+load-plugins = "pylint_django"
+django-settings-module = "config.settings"
+ignore-paths = ".*/migrations"
+
+[tool.pylint.FORMAT]
+max-line-length = 120
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "missing-docstring",
+    "invalid-name",
+]
+
+[tool.pylint.DESIGN]
+max-parents = 13
+
+[tool.pylint.TYPECHECK]
+generated-members = [
+    "REQUEST",
+    "acl_users",
+    "aq_parent",
+    "[a-zA-Z]+_set{1,2}",
+    "save",
+    "delete",
+]
